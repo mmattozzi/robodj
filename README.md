@@ -12,6 +12,10 @@ node.js version >= 0.6.5
 
 Configure
 =================
+
+    git clone git://github.com/mmattozzi/robodj.git
+    cd robodj
+
 Download the dependencies by cd-ing into the robodj directory and running:
 
     npm install
