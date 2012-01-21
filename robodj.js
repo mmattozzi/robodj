@@ -3,6 +3,19 @@ var TtBot = require('ttapi');
 var repl = require('repl');
 var fs = require('fs');
 
+// A turntable.fm bot implemented with ttapi. 
+//
+// Required properties:
+// {
+//     "bot": {
+//         "auth": "Auth header to join Turntable",
+//         "userID": "User ID of bot",
+//         "roomID": "Room to join on connect"
+//     }
+// }
+//
+// Property values can be found with: http://alaingilbert.github.com/Turntable-API/bookmarklet.html 
+//
 function RoboDJ(properties) {
     
     this.auth   = properties.bot.auth;
@@ -15,6 +28,7 @@ function RoboDJ(properties) {
 
     var self = this;
     
+    // Connect to Turntable and configure Bot 
     this.connect = function() {
         this.bot = new TtBot(this.auth, this.userID, this.roomID);
         
@@ -31,6 +45,8 @@ function RoboDJ(properties) {
             }
         });
         
+        // On first joining a room, wait 3 seconds before trying to DJ
+        // and wait 2 seconds and try to find out bot's own name.
         this.bot.on('registered', function(data) {
             util.log("Joined room");
             var f = self.tryToDj;
@@ -38,13 +54,17 @@ function RoboDJ(properties) {
             setTimeout(self.findDjName, 2000);
         });
         
+        // When bot is done playing his own song, prune playlist
         this.bot.on('endsong', function(data) {
             if (self.bot.currentDjId === self.userID) {
                 self.prunePlaylist();
             }
         });
         
+        // Responds to chat room messages
         this.bot.on('speak', function(data) {
+            
+            // Change music filter
             var m = data.text.match(/^\/play (.*)/);
             if (m) {
                 if (m[1] !== "") {
@@ -54,14 +74,17 @@ function RoboDJ(properties) {
                 }
             }
             
+            // Stop DJing
             if (data.text.match(/^\/down/)) {
                 self.bot.remDj();
             }
             
+            // Try to get up and DJ!
             if (data.text.match(/^\/up/)) {
                 self.tryToDj();
             }
             
+            // Respond to bot's own name
             var pattern = new RegExp(self.botName, "i");
             if (pattern.test(data.text)) {
                 self.bot.speak("Type '/play <string>' to change my taste in music");
@@ -70,6 +93,7 @@ function RoboDJ(properties) {
         
     };
 
+    // Figure out the bot's own name
     this.findDjName = function() {
         self.bot.userInfo(function(resp) {
             var name = resp.name;
@@ -81,6 +105,8 @@ function RoboDJ(properties) {
         });
     };
 
+    // Try to DJ. If all the DJ spots are full, wait one minute then 
+    // check again. Upon becoming a DJ, add some new songs to playlist.
     this.tryToDj = function() {
         self.bot.roomInfo(function(resp) {
             if (! resp.room.metadata.dj_full) {
@@ -95,6 +121,7 @@ function RoboDJ(properties) {
         });
     };
 
+    // Try to keep the playlist limited to no more than 20 songs. 
     this.prunePlaylist = function() {
         util.log("Attempting to prune playlist");
         self.bot.playlistAll(function(resp) {
@@ -110,6 +137,9 @@ function RoboDJ(properties) {
         });
     };
 
+    // Look for new songs to add to playlist. Get the Top 20 list of rooms and find
+    // the room titles that match the bot's filter. Add the current song playing in 
+    // these rooms.
     this.findAndAddSong = function() {
         util.log("Finding a new song to add");
         this.bot.listRooms(0, function(resp) {
@@ -128,6 +158,7 @@ function RoboDJ(properties) {
                 }
             });
             
+            // Let everybody know the filter may not be any good.
             if (added === 0) {
                 self.bot.speak("I'm having trouble finding new songs.");
             }
@@ -136,6 +167,7 @@ function RoboDJ(properties) {
         });
     };
 
+    // Dump out the playlist and its length to the console.
     this.logPlaylist = function() {
         util.log("Current Playlist");
         this.bot.playlistAll(function(resp) {
@@ -148,6 +180,7 @@ function RoboDJ(properties) {
 
 }
 
+// Use properties file from current directory.
 try {
     var properties = JSON.parse(fs.readFileSync("dj.properties"));
 } catch (err) {
@@ -155,11 +188,14 @@ try {
     throw err;
 }
 
+// Configure
 var dj = new RoboDJ(properties);
 
+// If webrepl is defined in the properties, configure and start it.
 if (properties.webrepl) {
     var wr = require('webrepl');
     wr.start(properties.webrepl.port, properties.webrepl).context.dj = dj;
 }
 
+// Join and get started DJing!
 dj.connect();
