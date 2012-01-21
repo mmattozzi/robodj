@@ -29,8 +29,8 @@ Commands in Turntable
 =================
 In the turntable chat window, robodj responds to the following patterns:
 
-* <name of bot> - Tells you something about himself
-* /play <keyword> - Uses keyword as a source to find new music, this keyword should be something that is in the title of a Turntable room
+* [name of bot] - Tells you something about himself
+* /play [keyword] - Uses keyword as a source to find new music, this keyword should be something that is in the title of a Turntable room
 * /up - Tells bot to become a DJ at the next chance available
 * /down - Tells bot to step down from DJing
 
