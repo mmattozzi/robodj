@@ -16,9 +16,13 @@ Download the dependencies by cd-ing into the robodj directory and running:
 
     npm install
 
-* cp dj.properties.sample dj.properties
-* Edit dj.properties to configure bot. You'll need to create an account for the bot to use.
-  * Use http://alaingilbert.github.com/Turntable-API/bookmarklet.html to find auth and login information. 
+Copy dj.properties.sample to dj.properties
+
+    cp dj.properties.sample dj.properties
+
+Edit dj.properties to configure bot. You'll need to create an account for the bot to use. Use http://alaingilbert.github.com/Turntable-API/bookmarklet.html to find auth and login information. 
+
+    vi dj.properties
 
 Run
 =================
