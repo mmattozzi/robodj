@@ -9,7 +9,7 @@ The intention of this bot isn't to subvert turntable.fm by Awesome-ing up all my
 Requires
 =================
 * node.js version >= 0.6.5
-* A [turntable.fm|http://turntable.fm] account.
+* A [turntable.fm](http://turntable.fm) account.
 
 Configure
 =================
