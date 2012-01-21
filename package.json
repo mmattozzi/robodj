@@ -1,0 +1,22 @@
+{
+    "name": "robodj",
+    "version": "1.0.0",
+    "author": "Mike Mattozzi <mike.mattozzi@gmail.com> (http://mikemattozzi.com)",
+    "description": "A node.js turntable.fm bot",
+    "homepage": "https://github.com/mmattozzi/robodj",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:mmattozzi/robodj.git"
+    },
+    "dependencies": {
+        "webrepl": "0.4.6",
+        "ttapi": ">= 1.0.11"
+    },
+    "engines": {
+        "node": ">=0.6.5"
+    },
+    "main": "./botboy.js",
+    "scripts": {
+        "start": "node botboy.js"
+    }
+}
