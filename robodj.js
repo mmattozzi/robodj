@@ -66,11 +66,11 @@ function RoboDJ(properties) {
         });
         
         // If djAgainOnBoot is true, try to become a DJ again after 10 seconds.
-        if (this.djAgainOnBoot) {
-            this.bot.on('booted_user', function(data) {
+        this.bot.on('booted_user', function(data) {
+            if (self.djAgainOnBoot) {
                 setTimeout(self.tryToDj, 10000);
-            });
-        }
+            }
+        });
         
         // Responds to chat room messages
         this.bot.on('speak', function(data) {
