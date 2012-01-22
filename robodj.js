@@ -27,6 +27,7 @@ function RoboDJ(properties) {
     this.botName = "";
     this.masterId = properties.bot.masterId;
     this.masterOnlyCommands = properties.bot.masterOnlyCommands;
+    this.djAgainOnBoot = properties.bot.djAgainOnBoot;
 
     var self = this;
     
@@ -64,6 +65,13 @@ function RoboDJ(properties) {
                 self.prunePlaylist();
             }
         });
+        
+        // If djAgainOnBoot is true, try to become a DJ again after 10 seconds.
+        if (this.djAgainOnBoot) {
+            this.bot.on('booted_user', function(data) {
+                setTimeout(self.tryToDj, 10000);
+            });
+        }
         
         // Responds to chat room messages
         this.bot.on('speak', function(data) {
