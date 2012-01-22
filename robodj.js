@@ -25,6 +25,8 @@ function RoboDJ(properties) {
     this.filter = "indie";
     this.lastSongIdPlayed = "";
     this.botName = "";
+    this.masterId = properties.bot.masterId;
+    this.masterOnlyCommands = properties.bot.masterOnlyCommands;
 
     var self = this;
     
@@ -32,8 +34,10 @@ function RoboDJ(properties) {
     this.connect = function() {
         this.bot = new TtBot(this.auth, this.userID, this.roomID);
         
+        // On a new song, 75% chance of bopping to it after 10 seconds.
+        // If bot is playing the song, load up more songs to bot's playlist.
         this.bot.on('newsong', function(data) {
-            util.log("A new song is playing: " + data);
+            util.log("A new song is playing: " + util.inspect(data));
             if (Math.random() > 0.25) {
                 setTimeout(function() {
                     self.bot.bop();
@@ -66,7 +70,7 @@ function RoboDJ(properties) {
             
             // Change music filter
             var m = data.text.match(/^\/play (.*)/);
-            if (m) {
+            if (m && self.authorizedCommand("play", data.userid)) {
                 if (m[1] !== "") {
                     self.filter = m[1];
                     self.bot.speak("I will try to play " + self.filter);
@@ -75,12 +79,12 @@ function RoboDJ(properties) {
             }
             
             // Stop DJing
-            if (data.text.match(/^\/down/)) {
+            if (data.text.match(/^\/down/) && self.authorizedCommand("down", data.userid)) {
                 self.bot.remDj();
             }
             
             // Try to get up and DJ!
-            if (data.text.match(/^\/up/)) {
+            if (data.text.match(/^\/up/) && self.authorizedCommand("up", data.userid)) {
                 self.tryToDj();
             }
             
@@ -91,6 +95,22 @@ function RoboDJ(properties) {
             }
         });
         
+    };
+
+    // Return true if the bot should accept cmd from userId
+    this.authorizedCommand = function(cmd, userId) {
+        if (! this.masterId || this.masterId === "") {
+            return true;
+        }
+        if (userId === this.masterId) {
+            return true;
+        } else {
+            if (! this.masterOnlyCommands || this.masterOnlyCommands.indexOf(cmd) === -1) {
+                return true;
+            }
+        }
+        
+        return false;
     };
 
     // Figure out the bot's own name
@@ -172,7 +192,7 @@ function RoboDJ(properties) {
         util.log("Current Playlist");
         this.bot.playlistAll(function(resp) {
             resp.list.forEach(function(song) {
-                util.log(song.metadata);
+                util.log(util.inspect(song.metadata));
             });
             util.log("Playlist Length is " + resp.list.length);
         });

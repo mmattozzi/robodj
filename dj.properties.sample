@@ -2,7 +2,12 @@
     "bot": {
         "auth": "Find using http://alaingilbert.github.com/Turntable-API/bookmarklet.html",
         "userID": "Find using http://alaingilbert.github.com/Turntable-API/bookmarklet.html",
-        "roomID": "Find using http://alaingilbert.github.com/Turntable-API/bookmarklet.html"
+        "roomID": "Find using http://alaingilbert.github.com/Turntable-API/bookmarklet.html",
+        "masterId": "If set, bot will only take masterOnlyCommands from user with this ID",
+        "masterOnlyCommands": [
+            "up",
+            "down"
+        ]
     },
     "webrepl": {
         "port": 5009
