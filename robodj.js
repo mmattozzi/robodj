@@ -27,7 +27,8 @@ function RoboDJ(properties) {
     this.botName = "";
     this.masterId = properties.bot.masterId;
     this.masterOnlyCommands = properties.bot.masterOnlyCommands;
-    this.djAgainOnBoot = properties.bot.djAgainOnBoot;
+    this.djAgainOnKnockedDown = properties.bot.djAgainOnKnockedDown;
+    this.lastCommand = "";
 
     var self = this;
     
@@ -65,9 +66,10 @@ function RoboDJ(properties) {
             }
         });
         
-        // If djAgainOnBoot is true, try to become a DJ again after 10 seconds.
-        this.bot.on('booted_user', function(data) {
-            if (self.djAgainOnBoot) {
+        // If djAgainOnKnockedDown is true, try to become a DJ again after 10 seconds.
+        this.bot.on('rem_dj', function(data) {
+            if (data.user[0].userid === self.userID && self.djAgainOnKnockedDown && self.lastCommand !== "down") {
+                util.log("I've been kicked off the DJ booth, I'll try to get back up!");
                 setTimeout(self.tryToDj, 10000);
             }
         });
@@ -106,6 +108,7 @@ function RoboDJ(properties) {
 
     // Return true if the bot should accept cmd from userId
     this.authorizedCommand = function(cmd, userId) {
+        this.lastCommand = cmd;
         if (! this.masterId || this.masterId === "") {
             return true;
         }

@@ -8,7 +8,7 @@
             "up",
             "down"
         ],
-        "djAgainOnBoot": false
+        "djAgainOnKnockedDown": false
     },
     "webrepl": {
         "port": 5009
