@@ -54,8 +54,7 @@ function RoboDJ(properties) {
         // and wait 2 seconds and try to find out bot's own name.
         this.bot.on('registered', function(data) {
             util.log("Joined room");
-            var f = self.tryToDj;
-            setTimeout(f, 3000);
+            setTimeout(self.tryToDj, 3000);
             setTimeout(self.findDjName, 2000);
         });
         
@@ -143,8 +142,7 @@ function RoboDJ(properties) {
                 self.findAndAddSong();
             } else {
                 util.log("Room has no open DJ spots, waiting...");
-                var f = self.tryToDj;
-                setTimeout(f, 60000);
+                setTimeout(self.tryToDj, 60000);
             }
         });
     };
