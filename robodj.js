@@ -139,7 +139,8 @@ function RoboDJ(properties) {
     // check again. Upon becoming a DJ, add some new songs to playlist.
     this.tryToDj = function() {
         self.bot.roomInfo(function(resp) {
-            if (! resp.room.metadata.dj_full) {
+            util.log(util.inspect(resp));
+            if (resp.room.metadata.djcount < resp.room.metadata.max_djs) {
                 util.log("Room has open DJ spots, adding DJ...");
                 self.bot.addDj();
                 self.findAndAddSong();
