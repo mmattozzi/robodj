@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "webrepl": "0.4.6",
-        "ttapi": ">= 1.0.11"
+        "ttapi": ">= 1.5.0"
     },
     "engines": {
         "node": ">=0.6.5"
