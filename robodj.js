@@ -34,6 +34,8 @@ function RoboDJ(properties) {
     
     // Connect to Turntable and configure Bot 
     this.connect = function() {
+        util.log("Attempting to connect to turntable.fm");
+        
         this.bot = new TtBot(this.auth, this.userID, this.roomID);
         
         // On a new song, 75% chance of bopping to it after 10 seconds.
